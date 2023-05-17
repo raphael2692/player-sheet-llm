@@ -9,3 +9,33 @@ updated_json:
 """,
     "input_variables" : ['current_json', 'user_prompt']
 }
+<<<<<<< Updated upstream
+=======
+
+SUGGERISCI_AZIONE_DND_ITA = {
+    "text" : """
+Il tuo compito è suggerire la prossima azione che deve compiere un certo personaggio in una campagna di Dungeons and Dragons basandoti sul prompt utente. 
+Devi essere originale e mai banale.
+Devi proporre azioni con un breve o brevissimo orizzonte temporale.
+Le tue proposte devono corrispondere ad azioni fattibili con le regole di Dungens And Dragons 5E. Fai riferimento il più possibile al manuale giocatore.
+Tutto quello che sai su questo personaggio è scritto in questo JSON: {player_sheet_json}
+Ti viene chiesto: {user_prompt}
+Rispondi (max 150 parole):
+""",
+    "input_variables" : ['player_sheet_json', 'user_prompt']
+}
+
+
+COSA_SUCCEDE_DOPO_DND_ITA = {
+    "text" : """
+Il tuo compito è descrivere cosa succederà nella campagna di Dungeons and Dragons di un dato personaggio a seguito di quanto descritto nel prompt utente. 
+Devi essere originale e mai banale.
+Devi proporre azioni con un breve o brevissimo orizzonte temporale.
+Le tue proposte devono corrispondere ad azioni fattibili con le regole di Dungens And Dragons 5E. Fai riferimento il più possibile al manuale giocatore.
+Tutto quello che sai su questo personaggio è scritto in questo JSON: {player_sheet_json}
+Cosa succede: {user_prompt}
+Rispondi (max 150 parole):
+""",
+    "input_variables" : ['player_sheet_json', 'user_prompt']
+}
+>>>>>>> Stashed changes

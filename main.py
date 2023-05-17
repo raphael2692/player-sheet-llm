@@ -78,7 +78,51 @@ async def test_with_fake_sheet(prompt:UserPrompt) -> PlayerSheet:
         LOGGER.error(f"Impossibile formattare la risposta di OpenAI: {e}")
         
     return res
+<<<<<<< Updated upstream
     
+=======
+
+
+@app.post("/test_suggest_action", tags=["Test"])
+async def test_suggest_action(prompt: UserPrompt) -> str:
+
+    player_sheet = PlayerSheet(**test_player_sheet_json)
+
+    suggest_action_template = Template(**SUGGERISCI_AZIONE_DND_ITA)
+
+    suggest_action_chain = init_llm_chain(prompt_template=suggest_action_template.text,
+                                          template_variables=suggest_action_template.input_variables,
+                                          chat_temperature=0.3,
+                                          output_key="suggest_action_chain_out")
+
+    response = suggest_action_chain.run(user_prompt=prompt.prompt,
+                                        player_sheet_json=player_sheet.json())
+
+    LOGGER.info(f"Risposta raw di OpenAI: {response}")
+
+    return response.replace("\"", "").strip()
+
+
+@app.post("/test_what_happens_later", tags=["Test"])
+async def test_what_happens_later(prompt: UserPrompt) -> str:
+
+    player_sheet = PlayerSheet(**test_player_sheet_json)
+
+    suggest_action_template = Template(**COSA_SUCCEDE_DOPO_DND_ITA)
+
+    suggest_action_chain = init_llm_chain(prompt_template=suggest_action_template.text,
+                                          template_variables=suggest_action_template.input_variables,
+                                          chat_temperature=0.3,
+                                          output_key="suggest_action_chain_out")
+
+    response = suggest_action_chain.run(user_prompt=prompt.prompt,
+                                        player_sheet_json=player_sheet.json())
+
+    LOGGER.info(f"Risposta raw di OpenAI: {response}")
+
+    return response.replace("\"", "").strip()
+
+>>>>>>> Stashed changes
 
 @app.get("/test_with_fake_prompt_and_sheet/", tags=["Test"])
 async def test_with_fake_prompt_and_sheet() -> PlayerSheet:
