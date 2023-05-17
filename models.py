@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel
 
 class PlayerSheet(BaseModel):
     ispirazione: int
@@ -13,3 +13,6 @@ class PlayerSheet(BaseModel):
 class Template(BaseModel):
     text: str
     input_variables: list
+    
+class UserPrompt(BaseModel):
+    prompt : str

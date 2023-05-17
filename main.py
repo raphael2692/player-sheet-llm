@@ -2,10 +2,12 @@
 # swagger at localhost:8000/docs
 
 from fastapi import FastAPI
-from models import PlayerSheet, Template
+from models import PlayerSheet, Template, UserPrompt
 from common import set_env, LOGGER
 from templates import UPDATE_JSON
 from chains_utils import init_llm_chain
+from fastapi.middleware.cors import CORSMiddleware
+
 
 
 set_env()
@@ -16,24 +18,43 @@ tags_metadata = [
 ]
 app = FastAPI(openapi_tags=tags_metadata)
 
+origins = [
+    "http://localhost:8000",
+    "http://localhost:8001",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# test data
+test_player_sheet_json = {
+    "ispirazione": 3,
+    "punti_ferita": 20,
+    "punti_ferita_massimi": 27,
+    "punti_ferita_temporanei": 0,
+    "monete_oro": 1200,
+    "monete_argento": 15,
+    "monete_rame": 33,
+    "oggetti": [
+        "stivali elfici",
+        "sfera luminosa"
+    ]
+}
+
+@app.get("/test_sheet", tags=["Test"])
+async def test_sheet() -> PlayerSheet:
+    return PlayerSheet(**test_player_sheet_json)
+
 
 @app.post("/test_with_fake_sheet", tags=["Test"])
-async def test_with_fake_sheet(prompt:str) -> PlayerSheet:
-    player_sheet_json = {
-        "ispirazione": 3,
-        "punti_ferita": 20,
-        "punti_ferita_massimi": 27,
-        "punti_ferita_temporanei": 0,
-        "monete_oro": 1200,
-        "monete_argento": 15,
-        "monete_rame": 33,
-        "oggetti": [
-            "stivali elfici",
-            "sfera luminosa"
-        ]
-    }
+async def test_with_fake_sheet(prompt:UserPrompt) -> PlayerSheet:
+
     
-    player_sheet = PlayerSheet(**player_sheet_json)
+    player_sheet = PlayerSheet(**test_player_sheet_json)
     
     update_player_sheet_template = Template(**UPDATE_JSON)
     
