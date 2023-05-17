@@ -36,9 +36,10 @@
                 <li><strong>Smart Player Sheet</strong></li>
             </ul>
             <ul>
+                <li><a href="#" id="help">help</a></li>
                 <!-- <li><a href="#">Link</a></li>
                 <li><a href="#">Link</a></li> -->
-                <li><a href="#" id="theme_switcher"></a></li>
+                <!-- <li><a href="#" id="theme_switcher"></a></li> -->
             </ul>
         </nav>
         <br>
@@ -47,18 +48,29 @@
         <div class="grid">
             <div>
                 <form id="userPromptForm">
-                    <label for="userPrompt">userPrompt</label>
+                    <!-- <label for="userPrompt">userPrompt</label> -->
                     <input type="text" id="userPrompt" name="userPrompt" placeholder="" required>
                     <small>Ad es. 'aggiungi 2 monete d'oro'</small>
-                    <button type="submit">update</button>
+
+                    <button type="submit">aggiorna scheda</button>
                 </form>
+                <p><i>oppure</i></p>
+                <div class="grid">
+                    <div> <button id="suggerisciAzione">suggerisci azione</button></div>
+                    <div> <button id="inventaCosaSuccedeDopo">cosa succede dopo </button></div>
+                    <div> <button id="suggerisciAzione">link utili</button></div>
+                </div>
+
 
 
                 <div id="loading">
                     <div aria-busy="true"></div>
                     <br>
                 </div>
+
+
                 <div id="fakeResult"></div>
+                <div id="altro"></div>
                 <div class="grid">
                     <div> <button id="save">save</button></div>
                     <div> <button id="restore">restore</button></div>
@@ -79,8 +91,9 @@
         function formatPlayerSheet(responseData) {
 
             prettySheet = `
-
-            <p>${responseData.nome_personaggio} (${responseData.classe}, livello ${responseData.livello})</p>
+            <h6> Scheda personaggio </h6>
+            <hr>
+            <p>${responseData.nome_personaggio} (${responseData.classe} ${responseData.razza}, livello ${responseData.livello})</p>
             <ul>
             <li>Ispirazione: ${responseData.ispirazione}</li>
             <li>Punti ferita: ${responseData.punti_ferita}</li>
@@ -92,6 +105,37 @@
             `
             return prettySheet
         }
+
+        function formatSuggestedAction(requestData, responseData) {
+
+            const firstLetter = requestData.prompt.charAt(0)
+            const firstLetterCap = firstLetter.toUpperCase()
+            const remainingLetters = requestData.prompt.slice(1)
+            const capitalizedWord = firstLetterCap + remainingLetters
+
+            pretty = `
+            <h6> ${capitalizedWord}..ecco cosa potresti fare:</h6>
+            <hr>
+            <p>${JSON.stringify(responseData)}</p>
+            `
+            return pretty
+        }
+
+        function formatCosaSuccedeDopo(requestData, responseData) {
+
+            const firstLetter = requestData.prompt.charAt(0)
+            const firstLetterCap = firstLetter.toUpperCase()
+            const remainingLetters = requestData.prompt.slice(1)
+            const capitalizedWord = firstLetterCap + remainingLetters
+
+            pretty = `
+            <h6> ${capitalizedWord}...ecco cosa potrebbe succedere:</h6>
+            <hr>
+            <p>${JSON.stringify(responseData)}</p>
+            `
+            return pretty
+        }
+
 
         $(document).ready(function () {
             $.ajax({
@@ -132,6 +176,52 @@
                         console.error(errMsg);
                     }
                 });
+            });
+            $('#suggerisciAzione').click(function () {
+                $('#loading').show();
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/test_suggest_action",
+                    data: JSON.stringify({ "prompt": $('#userPrompt').val() }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (responseData) {
+                        console.log(responseData);
+                        $('#loading').hide();
+                        $('#altro').html(formatSuggestedAction({ "prompt": $('#userPrompt').val() }, responseData));
+                    },
+
+                    error: function (errMsg) {
+                        console.error(errMsg);
+                    }
+                });
+            });
+
+            $('#inventaCosaSuccedeDopo').click(function () {
+                $('#loading').show();
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/test_what_happens_later",
+                    data: JSON.stringify({ "prompt": $('#userPrompt').val() }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (responseData) {
+                        console.log(responseData);
+                        $('#loading').hide();
+                        $('#altro').html(formatCosaSuccedeDopo({ "prompt": $('#userPrompt').val() }, responseData));
+                    },
+
+                    error: function (errMsg) {
+                        console.error(errMsg);
+                    }
+                });
+
+
+      
+
+            });
+            $('#help').click(function () {
+                alert("Ci sto lavorando! Se hai meno di 18 anni vai all'estero!");
             });
         });
 
