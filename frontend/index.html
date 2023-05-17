@@ -30,7 +30,7 @@
 </head>
 
 <body>
-    <main class="container-fluid">
+    <main class="container">
         <nav>
             <ul>
                 <li><strong>Smart Player Sheet</strong></li>
@@ -53,9 +53,7 @@
                     <button type="submit">update</button>
                 </form>
 
-            </div>
 
-            <div>
                 <div id="loading">
                     <div aria-busy="true"></div>
                     <br>
@@ -81,6 +79,8 @@
         function formatPlayerSheet(responseData) {
 
             prettySheet = `
+
+            <p>${responseData.nome_personaggio} (${responseData.classe}, livello ${responseData.livello})</p>
             <ul>
             <li>Ispirazione: ${responseData.ispirazione}</li>
             <li>Punti ferita: ${responseData.punti_ferita}</li>

@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 
 class PlayerSheet(BaseModel):
+    nome_personaggio: str
+    classe: str
+    livello: int
     ispirazione: int
     punti_ferita: int
     punti_ferita_massimi: int
