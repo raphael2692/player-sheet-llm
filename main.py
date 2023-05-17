@@ -32,6 +32,9 @@ app.add_middleware(
 
 # test data
 test_player_sheet_json = {
+    "nome_personaggio" : "Pam Verdefresco",
+    "classe" : "Ladro", 
+    "livello": 5,
     "ispirazione": 3,
     "punti_ferita": 20,
     "punti_ferita_massimi": 27,
