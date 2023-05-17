@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+
+    <title>Smart Player Sheet</title>
+    <style>
+        /* Pink Dark scheme (Forced) */
+        /* Enabled if forced with data-theme="dark" */
+        [data-theme="dark"] {
+            --primary: #d81b60;
+            --primary-hover: #e91e63;
+            --primary-focus: rgba(216, 27, 96, 0.25);
+            --primary-inverse: #FFF;
+        }
+
+        /* Pink (Common styles) */
+        :root {
+            --form-element-active-border-color: var(--primary);
+            --form-element-focus-color: var(--primary-focus);
+            --switch-color: var(--primary-inverse);
+            --switch-checked-background-color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container-fluid">
+        <nav>
+            <ul>
+                <li><strong>Smart Player Sheet</strong></li>
+            </ul>
+            <ul>
+                <!-- <li><a href="#">Link</a></li>
+                <li><a href="#">Link</a></li> -->
+                <li><a href="#" id="theme_switcher"></a></li>
+            </ul>
+        </nav>
+        <br>
+        <br>
+
+        <div class="grid">
+            <div>
+                <form id="userPromptForm">
+                    <label for="userPrompt">userPrompt</label>
+                    <input type="text" id="userPrompt" name="userPrompt" placeholder="" required>
+                    <small>Ad es. 'aggiungi 2 monete d'oro'</small>
+                    <button type="submit">update</button>
+                </form>
+
+            </div>
+
+            <div>
+                <div id="loading">
+                    <div aria-busy="true"></div>
+                    <br>
+                </div>
+                <div id="fakeResult"></div>
+                <div class="grid">
+                    <div> <button id="restore">restore</button></div>
+                    <div> <button id="save">save</button></div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </main>
+    </div>
+
+    <!-- scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        function formatPlayerSheet(responseData) {
+
+            prettySheet = `
+            <ul>
+            <li>Ispirazione: ${responseData.ispirazione}</li>
+            <li>Punti ferita: ${responseData.punti_ferita}</li>
+            <li>Monete d'oro: ${responseData.monete_oro}</li>
+            <li>Monete d'argento: ${responseData.monete_argento}</li>
+            <li>Monete di rame: ${responseData.monente_rame}</li>
+            <li>Oggetti: ${JSON.stringify(responseData.oggetti)}</li>
+            </ul>
+            `
+            return prettySheet
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:8000/test_sheet",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (responseData) {
+                    console.log(responseData);
+                    $('#loading').hide();
+                    $('#fakeResult').html(formatPlayerSheet(responseData));
+                },
+
+                error: function (errMsg) {
+                    console.error(errMsg);
+                }
+            });
+            // $('#loading').hide();
+            $('#userPromptForm').on('submit', function (e) {
+                e.preventDefault();
+                let userPrompt = $('#userPrompt').val();
+                var requestData = { "prompt": userPrompt }
+                console.log(requestData)
+                $('#loading').show();
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/test_with_fake_sheet",
+                    data: JSON.stringify(requestData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (responseData) {
+                        console.log(responseData);
+                        $('#loading').hide();
+                        $('#fakeResult').html("<p>" + JSON.stringify(responseData) + "</p>");
+                    },
+
+                    error: function (errMsg) {
+                        console.error(errMsg);
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+
+</html>
