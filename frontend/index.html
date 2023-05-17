@@ -127,7 +127,7 @@
                     success: function (responseData) {
                         console.log(responseData);
                         $('#loading').hide();
-                        $('#fakeResult').html("<p>" + JSON.stringify(responseData) + "</p>");
+                        $('#fakeResult').html(formatPlayerSheet(responseData));
                     },
 
                     error: function (errMsg) {
