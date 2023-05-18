@@ -2,11 +2,13 @@
 # swagger at localhost:8000/docs
 
 from fastapi import FastAPI
-from models import PlayerSheet, Template, UserPrompt
+from models import PlayerSheet, Template, UserPrompt, PlayerSheetObject
 from common import set_env, LOGGER
 from templates import UPDATE_JSON, SUGGERISCI_AZIONE_DND_ITA, COSA_SUCCEDE_DOPO_DND_ITA
 from chains_utils import init_llm_chain
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+import json
 
 # test data
 TEST_PLAYER_SHEET_JSON = {
@@ -101,11 +103,21 @@ tags_metadata = [
 ]
 app = FastAPI(openapi_tags=tags_metadata)
 
-origins = [
-    "http://localhost:8000",
-    "http://localhost:8001",
-    "http://localhost:8002",
-]
+# origins = [
+#     "http://localhost:8000",
+#     "http://localhost:8001",
+#     "http://localhost:8002",
+
+#     "http://0.0.0.0:8000",
+#     "http://0.0.0.0:8001",
+#     "http://0.0.0.0:8002",
+    
+#     "http://127.0.0.1:8000",
+#     "http://127.0.0.1:8001",
+#     "http://127.0.0.1:8002",
+# ]
+origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -161,7 +173,7 @@ async def test_with_fake_sheet_variables_only(prompt: UserPrompt) -> PlayerSheet
         "monete_oro": player_sheet.monete_oro,
         "monete_argento": player_sheet.monete_argento,
         "monete_rame": player_sheet.monete_rame,
-        "oggetti": player_sheet.oggetti
+        "oggetti": [ model.dict() for model in player_sheet.oggetti]
     }
 
     update_player_sheet_template = Template(**UPDATE_JSON)
@@ -189,7 +201,7 @@ async def test_with_fake_sheet_variables_only(prompt: UserPrompt) -> PlayerSheet
         player_sheet.monete_oro = res_dict['monete_oro']
         player_sheet.monete_argento = res_dict['monete_argento']
         player_sheet.monete_rame = res_dict['monete_rame']
-        player_sheet.oggetti = res_dict['oggetti']
+        player_sheet.oggetti = [PlayerSheetObject(**oggetto) for oggetto in  res_dict['oggetti']]
         
         LOGGER.info(f"Risposta formattata correttamente: {player_sheet}")
 
@@ -282,3 +294,7 @@ async def test_with_fake_prompt_and_sheet() -> PlayerSheet:
 
     return res
 
+@app.get("/test_save/", tags=["Test"])
+def test_save() -> PlayerSheet:
+    return PlayerSheet(**CURRENT_PLAYER_SHEET)
+    
