@@ -17,11 +17,9 @@ class PlayerProficiency(BaseModel):
     
 class PlayerCombatActions(BaseModel):
     nome: str
-    descrizione: str
     
 class PlayerBonusActions(BaseModel):
     nome: str
-    descrizione: str
 
 class PlayerReactions(BaseModel):
     nome: str

@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 
-    <title>Smart Player Sheet</title>
+    <title>lazyPig DnD 5th edition</title>
     <style>
         /* Pink Dark scheme (Forced) */
         /* Enabled if forced with data-theme="dark" */
@@ -33,7 +33,7 @@
     <main class="container">
         <nav>
             <ul>
-                <li><strong>Smart Player Sheet</strong></li>
+                <li><strong>lazyPig DnD 5th edition 🐷</strong></li>
             </ul>
             <ul>
                 <li><a href="#" id="help">help</a></li>
@@ -50,15 +50,15 @@
                 <form id="userPromptForm">
                     <!-- <label for="userPrompt">userPrompt</label> -->
                     <textarea type="text" rows="5" id="userPrompt" name="userPrompt" placeholder="" required></textarea>
-                    <small>Ad es. 'aggiungi 2 monete d'oro'</small>
+                    <small>Qui puoi cambiare la sezione della scheda relativa a punti ispirazione, punti ferita, monete e oggetti dell'inventario, ad es. 'aggiungi 10 monete d'oro e una pozione di guarigione'</small>
 
-                    <button type="submit">aggiorna scheda</button>
+                    <button type="submit">aggiorna variabili scheda</button>
                 </form>
                 <p><i>oppure</i></p>
                 <div class="grid">
                     <div> <button id="suggerisciAzione">suggerisci azione</button></div>
                     <div> <button id="inventaCosaSuccedeDopo">cosa succede dopo </button></div>
-                    <div> <button id="suggerisciAzione">link utili</button></div>
+                    <!-- <div> <button id="suggerisciAzione">link utili</button></div> -->
                 </div>
 
 
@@ -105,17 +105,56 @@
                     competenze += `<li>${el.nome}: ${el.bonus}</li>`
                 }
             )
-            
+
             oggetti = ''
             responseData.oggetti.forEach(
                 (el) => {
-                    oggetti += `<li>${el.nome}. ${el.descrizione}. Utilizzi: ${el.utilizzi}</li>`
+                    oggetti += `<li>${el.nome}. <i>${el.descrizione}</i>. Utilizzi: ${el.utilizzi}</li>`
+                }
+            )
+
+            tratti_razziali = ''
+            responseData.tratti_razziali.forEach(
+                (el) => {
+                    tratti_razziali += `<li>${el.nome}. <i>${el.descrizione}</i></li>`
+                }
+            )
+
+            azioni_combattimento = ''
+            responseData.azioni_combattimento.forEach(
+                (el) => {
+                    azioni_combattimento += `<li>${el.nome}</li>`
+                }
+            )
+            privilegi_classe = ''
+            responseData.privilegi_classe.forEach(
+                (el) => {
+                    privilegi_classe += `<li>${el.nome}. <i>${el.descrizione}</i></li>`
+                }
+            )
+            talenti = ''
+            responseData.talenti.forEach(
+                (el) => {
+                    talenti += `<li>${el.nome}. <i>${el.descrizione}</i></li>`
+                }
+            )
+            reazioni = ''
+            responseData.reazioni.forEach(
+                (el) => {
+                    reazioni += `<li>${el.nome}. <i>${el.descrizione}</i></li>`
+                }
+            )
+            azioni_bonus = ''
+            responseData.azioni_bonus.forEach(
+                (el) => {
+                    azioni_bonus += `<li>${el.nome}</li>`
                 }
             )
 
 
             prettySheet = `
             <br>
+
             <h4>${responseData.nome_personaggio} (${responseData.classe} ${responseData.razza}, livello ${responseData.livello}), ${responseData.allineamento}</h4>
             <hr>
             <br>
@@ -126,27 +165,54 @@
                 <br>
                 <p><i>${responseData.motto}</i></p>
             </div>
+
+
+        
+            <h5> Variabili scheda </h5>
+            <hr>
             <br>
+                <ul>
+                    <li>Ispirazione: ${responseData.ispirazione}</li>
+                    <li>Punti ferita: ${responseData.punti_ferita}</li>
+                    <li>Monete d'oro: ${responseData.monete_oro}</li>
+                    <li>Monete d'argento: ${responseData.monete_argento}</li>
+                    <li>Monete di rame: ${responseData.monete_rame}</li>
+                </ul>
+            <ul>${oggetti}</ul>  
+
+            <br>
+         
+            <h5> Altro </h5>
+            <hr>
             <br>
             <div class='grid'>
                 <div>
-                    <ul><li>CA: ${JSON.stringify(responseData.ca)}</li></ul>
+                    <h6>CA</h6>
+                    <ul><li>${JSON.stringify(responseData.ca)}</li></ul>
+                    <h6>Statistiche</h6>
                     <ul>${stats}</ul>
+                    <h6>Competenze</h6>
                     <ul>${competenze}</ul>
-               
-                  
+                    <h6>Tratti razziali</h6>
+                    <ul>${tratti_razziali}</ul>
+                    <h6>Talenti</h6>
+                    <ul>${talenti}</ul>
+          
                 </div>
                 <div>
-                    <ul>
-                        <li>Ispirazione: ${responseData.ispirazione}</li>
-                        <li>Punti ferita: ${responseData.punti_ferita}</li>
-                        <li>Monete d'oro: ${responseData.monete_oro}</li>
-                        <li>Monete d'argento: ${responseData.monete_argento}</li>
-                        <li>Monete di rame: ${responseData.monete_rame}</li>
-                    </ul>
-                    <ul>${oggetti}</ul>   
+                    <h6>Privilegi classe</h6>
+                    <ul>${privilegi_classe}</ul>
+
+                    <h6>Reazioni</h6>
+                    <ul>${reazioni}</ul>
+                    <h6>Azioni bonus</h6>
+                    <ul>${azioni_bonus}</ul>
+                    <h6>Azioni in combattimento</h6>
+                    <ul>${azioni_combattimento}</ul>   
                 </div>
             </div>
+            <br>
+            <br>
 
             `
             return prettySheet
@@ -160,7 +226,7 @@
             const capitalizedWord = firstLetterCap + remainingLetters
 
             pretty = `
-            <h4> ${capitalizedWord}..ecco cosa potresti fare:</h4>
+            <h4> ${capitalizedWord}...ecco cosa potresti fare:</h4>
             <hr>
             <p>${JSON.stringify(responseData)}</p>
             `
@@ -209,7 +275,7 @@
                 $('#loading').show();
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/test_with_fake_sheet",
+                    url: "http://127.0.0.1:8000/test_with_fake_sheet_variables_only",
                     data: JSON.stringify(requestData),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
