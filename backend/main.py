@@ -181,7 +181,7 @@ async def test_suggest_action(prompt: UserPrompt) -> str:
 
     suggest_action_chain = init_llm_chain(prompt_template=suggest_action_template.text,
                                           template_variables=suggest_action_template.input_variables,
-                                          chat_temperature=0.9,
+                                          chat_temperature=0.7,
                                           output_key="suggest_action_chain_out")
 
     response = suggest_action_chain.run(user_prompt=prompt.prompt,
@@ -207,7 +207,7 @@ async def test_what_happens_later(prompt: UserPrompt) -> str:
 
     suggest_action_chain = init_llm_chain(prompt_template=suggest_action_template.text,
                                           template_variables=suggest_action_template.input_variables,
-                                          chat_temperature=0.9,
+                                          chat_temperature=0.7,
                                           output_key="suggest_action_chain_out")
 
     response = suggest_action_chain.run(user_prompt=prompt.prompt,

@@ -54,7 +54,10 @@
 
                     <button type="submit">aggiorna variabili scheda</button>
                 </form>
-                <p><i>oppure</i></p>
+                <div style='display: block; text-align:center'>
+                    <p><i>oppure</i></p>
+                </div>
+          
                 <div class="grid">
                     <div> <button id="suggerisciAzione">suggerisci azione</button></div>
                     <div> <button id="inventaCosaSuccedeDopo">cosa succede dopo </button></div>
@@ -229,7 +232,7 @@
             const capitalizedWord = firstLetterCap + remainingLetters
 
             pretty = `
-            <h4> ${capitalizedWord}...ecco cosa potresti fare:</h4>
+            <h4> ${capitalizedWord}...ecco una possibile mossa successiva:</h4>
             <hr>
             <p>${JSON.stringify(responseData)}</p>
             `
