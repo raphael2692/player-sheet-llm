@@ -7,9 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@500&display=swap" rel="stylesheet">
 
     <title>lazyPig DnD 5th edition</title>
     <style>
+        *, h1, h2, h3, h4, h5, h6 {
+            font-family: 'David Libre', serif;
+        }
         /* Pink Dark scheme (Forced) */
         /* Enabled if forced with data-theme="dark" */
         [data-theme="dark"] {
@@ -50,14 +56,15 @@
                 <form id="userPromptForm">
                     <!-- <label for="userPrompt">userPrompt</label> -->
                     <textarea type="text" rows="5" id="userPrompt" name="userPrompt" placeholder="" required></textarea>
-                    <small>Qui puoi cambiare la sezione della scheda relativa a punti ispirazione, punti ferita, monete e oggetti dell'inventario, ad es. 'aggiungi 10 monete d'oro e una pozione di guarigione'</small>
+                    <small>Qui puoi cambiare la sezione della scheda relativa a punti ispirazione, punti ferita, monete
+                        e oggetti dell'inventario, ad es. 'aggiungi 10 monete d'oro e una pozione di guarigione'</small>
 
                     <button type="submit">aggiorna variabili scheda</button>
                 </form>
                 <div style='display: block; text-align:center'>
                     <p><i>oppure</i></p>
                 </div>
-          
+
                 <div class="grid">
                     <div> <button id="suggerisciAzione">suggerisci azione</button></div>
                     <div> <button id="inventaCosaSuccedeDopo">cosa succede dopo </button></div>
@@ -77,9 +84,11 @@
                 <div id="fakeResult"></div>
 
                 <div class="grid">
-                    <div> <button id="restore">restore last</button></div>
-                    <div> <button id="download"> <a href="http://143-42-58-103.ip.linodeusercontent.com:8000/test_download" style="color:white;text-decoration: none;">download</a></button></div>
-                    
+                    <div> <button id="restore">ripristina</button></div>
+                    <div> <button id="download"> <a
+                                href="http://143-42-58-103.ip.linodeusercontent.com:8000/test_download"
+                                style="color:white;text-decoration: none;">download</a></button></div>
+
                 </div>
             </div>
         </div>
@@ -161,20 +170,21 @@
             prettySheet = `
             <br>
 
-            <h4>${responseData.nome_personaggio} (${responseData.classe} ${responseData.razza}, livello ${responseData.livello}), ${responseData.allineamento}</h4>
+            <h4>Scheda Personaggio</h4>
             <hr>
             <br>
             <div style='display: block; text-align:center'>
 
-                <img src="${responseData.avatar}" alt="" width="128" height="128">
+                <img src="${responseData.avatar}" alt="" width="256" height="256" style="border-radius: 50%;">
                 <br>
                 <br>
-                <p><i>${responseData.motto}</i></p>
+                <p><i>${responseData.nome_personaggio} (${responseData.classe} ${responseData.razza}, livello ${responseData.livello}), ${responseData.allineamento}</i></p>
+                <br>
             </div>
 
 
         
-            <h5> Variabili scheda </h5>
+            <h5> Variabili </h5>
             <hr>
             <br>
                 <ul>
@@ -188,7 +198,7 @@
 
             <br>
          
-            <h5> Altro </h5>
+            <h5> Tutto il resto </h5>
             <hr>
             <br>
             <div class='grid'>
@@ -362,7 +372,7 @@
                     }
                 });
             });
-            
+
             // $('#download').click(function () {
             //     $('#loading').show();
             //     $.ajax({
