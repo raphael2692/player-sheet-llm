@@ -14,10 +14,36 @@ class PlayerStat(BaseModel):
 class PlayerProficiency(BaseModel):
     nome: str
     bonus: int
+    
+class PlayerCombatActions(BaseModel):
+    nome: str
+    descrizione: str
+    
+class PlayerBonusActions(BaseModel):
+    nome: str
+    descrizione: str
+
+class PlayerReactions(BaseModel):
+    nome: str
+    descrizione: str
+
+class PlayerRacialTraits(BaseModel):
+    nome: str
+    descrizione: str
+    
+class PlayerClassFeatures(BaseModel):
+    nome: str
+    descrizione: str
+    
+class PlayerFeats(BaseModel):
+    nome: str
+    descrizione: str
+
      
 class PlayerSheet(BaseModel):
     nome_personaggio: str
     avatar: str
+    motto: str
     classe: str
     razza: str
     livello: int
@@ -32,6 +58,14 @@ class PlayerSheet(BaseModel):
     monete_rame: int
     statistiche: List[PlayerStat]
     competenze: List[PlayerProficiency]
+    
+    tratti_razziali: List[PlayerRacialTraits]
+    azioni_combattimento: List[PlayerCombatActions]
+    privilegi_classe: List[PlayerClassFeatures]
+    talenti: List[PlayerFeats]
+    reazioni: List[PlayerReactions]
+    azioni_bonus: List[PlayerBonusActions]
+    
     oggetti: List[PlayerSheetObject]
     
 class Template(BaseModel):

@@ -88,39 +88,64 @@
 
     <script>
 
+
         function formatPlayerSheet(responseData) {
+
+            // format stats
+            stats = ''
+            responseData.statistiche.forEach(
+                (el) => {
+                    stats += `<li>${el.nome}: ${el.modificatore} (${el.valore})</li>`
+                }
+            )
+
+            competenze = ''
+            responseData.competenze.forEach(
+                (el) => {
+                    competenze += `<li>${el.nome}: ${el.bonus}</li>`
+                }
+            )
+            
+            oggetti = ''
+            responseData.oggetti.forEach(
+                (el) => {
+                    oggetti += `<li>${el.nome}. ${el.descrizione}. Utilizzi: ${el.utilizzi}</li>`
+                }
+            )
+
 
             prettySheet = `
             <br>
-            <h4> Scheda personaggio </h4>
+            <h4>${responseData.nome_personaggio} (${responseData.classe} ${responseData.razza}, livello ${responseData.livello}), ${responseData.allineamento}</h4>
             <hr>
             <br>
-            
-            
-            
-            <img src="${responseData.avatar}" alt="" width="128" height="128">
-            <small>${responseData.nome_personaggio} (${responseData.classe} ${responseData.razza}, livello ${responseData.livello}), ${responseData.allineamento}</small>
+            <div style='display: block; text-align:center'>
 
+                <img src="${responseData.avatar}" alt="" width="128" height="128">
+                <br>
+                <br>
+                <p><i>${responseData.motto}</i></p>
+            </div>
             <br>
             <br>
             <div class='grid'>
                 <div>
-
-
-            <p>Statistiche: ${JSON.stringify(responseData.statistiche)}</p>
-            <p>Competenze: ${JSON.stringify(responseData.competenze)}</p>
-            <p>CA: ${JSON.stringify(responseData.ca)}</p>
-            <p>Oggetti: ${JSON.stringify(responseData.oggetti)}</p>
+                    <ul><li>CA: ${JSON.stringify(responseData.ca)}</li></ul>
+                    <ul>${stats}</ul>
+                    <ul>${competenze}</ul>
+               
+                  
                 </div>
                 <div>
-            <ul>
-            <li>Ispirazione: ${responseData.ispirazione}</li>
-            <li>Punti ferita: ${responseData.punti_ferita}</li>
-            <li>Monete d'oro: ${responseData.monete_oro}</li>
-            <li>Monete d'argento: ${responseData.monete_argento}</li>
-            <li>Monete di rame: ${responseData.monete_rame}</li>
-                </ul>
-            </div>
+                    <ul>
+                        <li>Ispirazione: ${responseData.ispirazione}</li>
+                        <li>Punti ferita: ${responseData.punti_ferita}</li>
+                        <li>Monete d'oro: ${responseData.monete_oro}</li>
+                        <li>Monete d'argento: ${responseData.monete_argento}</li>
+                        <li>Monete di rame: ${responseData.monete_rame}</li>
+                    </ul>
+                    <ul>${oggetti}</ul>   
+                </div>
             </div>
 
             `

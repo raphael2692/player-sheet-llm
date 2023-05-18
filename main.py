@@ -31,11 +31,12 @@ app.add_middleware(
 
 # test data
 test_player_sheet_json = {
-    "nome_personaggio": "Pam Verdefresco",
+    "nome_personaggio": "Sam Sottofrasca",
     "classe": "Ladro",
     "avatar": "https://cdn.mage.space/generate/e05fef03d4b54c4cab7445900e712743.png",
     "livello": 5,
     "razza": "Mezzuomo",
+    "motto": "Cavalier con quattro palle, il nemico ti è alle spalle",
     "allineamento" : "Caotico Neutrale",
     "ispirazione": 3,
     "ca": 14,
@@ -60,11 +61,48 @@ test_player_sheet_json = {
         {"nome": "Rapidità di mano", "bonus": 6},
         ],
     "oggetti": [
-        {"nome": "stivali elfici", "descrizione" : "ottieni vantaggio nelle prove di Furtività", "utilizzi" : "illimitati"},
-        {"nome" : "sfera luminosa", "descrizione" : "gravita intorno al personaggio illuminando l'area", "utilizzi": "illimitati"},
-        {"nome" : "arco corto +1", "descrizione" : "1d6 di danno performante a distanza, +1 a colpire e al danno", "utilizzi": "80"},
-        {"nome" : "stocco", "descrizione" : "1d8 di danno performante in mischia", "utilizzi": "illimitato"},
-    ]
+        {"nome": "Stivali elfici", "descrizione" : "Ottieni vantaggio nelle prove di Furtività", "utilizzi" : "illimitati"},
+        {"nome" : "Sfera luminosa", "descrizione" : "Gravita intorno al personaggio illuminando l'area", "utilizzi": "illimitati"},
+        {"nome" : "Arco corto +1", "descrizione" : "1d6 di danno performante a distanza, +1 a colpire e al danno", "utilizzi": "80"},
+        {"nome" : "Stocco", "descrizione" : "1d8 di danno performante in mischia", "utilizzi": "illimitato"},
+    ],
+    
+    "tratti_razziali" : [
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+    ],
+        "azioni_combattimento" : [
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+    ],
+        "privilegi_classe" : [
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+    ],
+        "talenti" : [
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+    ],
+        "reazioni" : [
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+    ],
+        "azioni_bonus" : [
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+        {"nome": "", "descrizione": ""}, 
+    ],
 }
 
 
@@ -111,7 +149,7 @@ async def test_suggest_action(prompt: UserPrompt) -> str:
 
     suggest_action_chain = init_llm_chain(prompt_template=suggest_action_template.text,
                                           template_variables=suggest_action_template.input_variables,
-                                          chat_temperature=0.7,
+                                          chat_temperature=0.9,
                                           output_key="suggest_action_chain_out")
 
     response = suggest_action_chain.run(user_prompt=prompt.prompt,
@@ -131,7 +169,7 @@ async def test_what_happens_later(prompt: UserPrompt) -> str:
 
     suggest_action_chain = init_llm_chain(prompt_template=suggest_action_template.text,
                                           template_variables=suggest_action_template.input_variables,
-                                          chat_temperature=0.7,
+                                          chat_temperature=0.9,
                                           output_key="suggest_action_chain_out")
 
     response = suggest_action_chain.run(user_prompt=prompt.prompt,
