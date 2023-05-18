@@ -64,6 +64,8 @@
 
 
                 <div id="loading">
+                    <br>
+                    <br>
                     <div aria-busy="true"></div>
                     <br>
                 </div>
@@ -72,8 +74,9 @@
                 <div id="fakeResult"></div>
 
                 <div class="grid">
-                    <div> <button id="save">save</button></div>
-                    <div> <button id="restore">restore</button></div>
+                    <div> <button id="restore">restore last</button></div>
+                    <div> <button id="download"> <a href="http://143-42-58-103.ip.linodeusercontent.com:8000/test_download" style="color:white;text-decoration: none;">download</a></button></div>
+                    
                 </div>
             </div>
         </div>
@@ -336,6 +339,45 @@
             $('#help').click(function () {
                 alert("Ci sto lavorando! Se hai meno di 18 anni vai all'estero!");
             });
+
+            $('#restore').click(function () {
+                $('#loading').show();
+                $.ajax({
+                    type: "GET",
+                    url: "http://143-42-58-103.ip.linodeusercontent.com:8000/test_restore",
+                    data: '',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (responseData) {
+                        console.log(responseData);
+                        $('#loading').hide();
+                        $('#fakeResult').html(formatPlayerSheet(responseData));
+                    },
+
+                    error: function (errMsg) {
+                        console.error(errMsg);
+                    }
+                });
+            });
+            
+            // $('#download').click(function () {
+            //     $('#loading').show();
+            //     $.ajax({
+            //         type: "GET",
+            //         url: "http://143-42-58-103.ip.linodeusercontent.com:8000/test_download",
+            //         data: '',
+            //         contentType: "application/json; charset=utf-8",
+            //         dataType: "json",
+            //         success: function (responseData) {
+            //             console.log(responseData);
+            //             $('#loading').hide();
+            //         },
+
+            //         error: function (errMsg) {
+            //             console.error(errMsg);
+            //         }
+            //     });
+            // });
         });
 
     </script>

@@ -7,93 +7,31 @@ from common import set_env, LOGGER
 from templates import UPDATE_JSON, SUGGERISCI_AZIONE_DND_ITA, COSA_SUCCEDE_DOPO_DND_ITA
 from chains_utils import init_llm_chain
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from starlette.responses import JSONResponse, FileResponse
 import json
 
-# test data
-TEST_PLAYER_SHEET_JSON = {
-    "nome_personaggio": "Sam Sottofrasca",
-    "classe": "Ladro",
-    "avatar": "https://cdn.mage.space/generate/e05fef03d4b54c4cab7445900e712743.png",
-    "livello": 5,
-    "razza": "Mezzuomo",
-    "motto": "Cavalier con quattro palle, il nemico ti è alle spalle",
-    "allineamento": "Caotico Neutrale",
-    "ispirazione": 3,
-    "ca": 14,
-    "punti_ferita": 20,
-    "punti_ferita_massimi": 27,
-    "punti_ferita_temporanei": 0,
-    "monete_oro": 1200,
-    "monete_argento": 15,
-    "monete_rame": 33,
-    "statistiche": [
-        {"nome": "Forza", "valore": 8, "modificatore": -1},
-        {"nome": "Destrezza", "valore": 17, "modificatore": 3},
-        {"nome": "Costituzione", "valore": 12, "modificatore": 1},
-        {"nome": "Intelligenza", "valore": 14, "modificatore": 2},
-        {"nome": "Saggezza", "valore": 10, "modificatore": 0},
-        {"nome": "Carisma", "valore": 14, "modificatore": 2},
-    ],
-    "competenze": [
-        {"nome": "Nascondersi", "bonus": 9},
-        {"nome": "Investigare", "bonus": 8},
-        {"nome": "Acrobazia", "bonus": 6},
-        {"nome": "Rapidità di mano", "bonus": 6},
-    ],
-    "oggetti": [
-        {"nome": "Stivali elfici", "descrizione": "Ottieni vantaggio nelle prove di Furtività",
-            "utilizzi": "illimitati"},
-        {"nome": "Sfera luminosa", "descrizione": "Gravita intorno al personaggio illuminando l'area",
-            "utilizzi": "illimitati"},
-        {"nome": "Arco corto +1",
-            "descrizione": "1d6 di danno performante a distanza, +1 a colpire e al danno", "utilizzi": "80"},
-        {"nome": "Stocco", "descrizione": "1d8 di danno performante in mischia",
-            "utilizzi": "illimitato"},
-    ],
 
-    "tratti_razziali": [
-        {"nome": "Fortunato", "descrizione": "Se rolli 1 su un d20 puoi tirare di nuovo"},
-        {"nome": "Coraggioso", "descrizione": "Ottieni vantaggio se spaventato"},
-        {"nome": "Leggiadria dei mezzuomini",
-            "descrizione": "Puoi muoverti attraverso creature più grande di te"},
-        {"nome": "Furtività naturale",
-            "descrizione": "Puoi provare a nasconderti dietro una creatura più grande di te"},
-    ],
-    "azioni_combattimento": [
-        {"nome": "Attaccare"},
-        {"nome": "Scattare"},
-        {"nome": "Disingaggiare"},
-        {"nome": "Schivare"},
-        {"nome": "Usare un rampino"},
-        {"nome": "Nascondersi"},
-        {"nome": "Usare un oggetto"},
-        {"nome": "Preparare un'azione"},
+def read_json(fpath:str):
+    with open(fpath, 'r') as file:
+        data = json.load(file)
+    return data
 
-    ],
-    "privilegi_classe": [
-        {"nome": "Attacco furtivo",
-            "descrizione": "Una volta a turno può attaccare con un arma perforante aggiungendo un 3d6 al danno"},
-        {"nome": "Azione scaltra",
-            "descrizione": "Può usare un'azione bonus per scattare, disingaggiare o nascondersi"},
-        {"nome": "Mani veloci", "descrizione": "Può usare il bonus di azione scaltra per usare un oggetto, fare una prova di Rapidità di mano o rimuovere una trappola"},
-    ],
-    "talenti": [
-        {"nome": "Tiratore scelto", "descrizione": "Quando usa un arco, una volta per turno può rinunciare al bonus di competenza per colpire per aggiungere 10 danni"},
-        {"nome": "Esploratore di dungeon", "descrizione": "Ottiene vantaggio nelle prove investigazione per cercare porte nascoste e trappole, e nei tiri salvezza sulle trappole"},
-    ],
-    "reazioni": [
-        {"nome": "Attacco di opportunità", "descrizione": "Può attaccare un nemico che cerca di passare vicino"},
-        {"nome": "Schivata prodigiosa", "descrizione": "Può usare una reazione per dimezzare i danni ricevuti"},
+def write_json(dictionary:dict, fpath:str):
+    with open(fpath, 'w') as file:
+        json.dump(dictionary, file)
 
-    ],
-    "azioni_bonus": [
-        {"nome": "Azione scaltra"},
-        {"nome": "Mani veloci"},
-    ],
-}
 
-CURRENT_PLAYER_SHEET = TEST_PLAYER_SHEET_JSON #TODO change with one get from db
+global SHEET_FPATH
+global SHEET_FPATH_RESTORE
+global CURRENT_PLAYER_SHEET
+
+SHEET_FPATH = "test_player_sheet.json"
+SHEET_FPATH_RESTORE = "test_player_sheet_restore.json"
+CURRENT_PLAYER_SHEET = read_json(SHEET_FPATH)
+# print("***")
+# print(CURRENT_PLAYER_SHEET)
+write_json(CURRENT_PLAYER_SHEET, SHEET_FPATH_RESTORE)
+
 ## fastapi
 set_env()
 
@@ -116,6 +54,7 @@ app = FastAPI(openapi_tags=tags_metadata)
 #     "http://127.0.0.1:8001",
 #     "http://127.0.0.1:8002",
 # ]
+
 origins = ["*"]
 
 app.add_middleware(
@@ -134,6 +73,12 @@ async def test_sheet() -> PlayerSheet:
 @app.post("/test_with_fake_sheet", tags=["Test"])
 async def test_with_fake_sheet(prompt: UserPrompt) -> PlayerSheet:
 
+    global CURRENT_PLAYER_SHEET
+    global SHEET_FPATH_RESTORE
+    global SHEET_FPATH
+
+    write_json(CURRENT_PLAYER_SHEET, SHEET_FPATH_RESTORE)
+
     player_sheet = PlayerSheet(**CURRENT_PLAYER_SHEET)
 
     update_player_sheet_template = Template(**UPDATE_JSON)
@@ -151,6 +96,10 @@ async def test_with_fake_sheet(prompt: UserPrompt) -> PlayerSheet:
     try:
         res_dict = eval(response.strip())
         res = PlayerSheet(**res_dict)
+
+        CURRENT_PLAYER_SHEET = res_dict
+        write_json(CURRENT_PLAYER_SHEET, SHEET_FPATH)
+
         LOGGER.info(f"Risposta formattata correttamente: {res}")
 
     except Exception as e:
@@ -161,6 +110,12 @@ async def test_with_fake_sheet(prompt: UserPrompt) -> PlayerSheet:
 
 @app.post("/test_with_fake_sheet_variables_only", tags=["Test"])
 async def test_with_fake_sheet_variables_only(prompt: UserPrompt) -> PlayerSheet:
+    
+    global CURRENT_PLAYER_SHEET
+    global SHEET_FPATH_RESTORE
+    global SHEET_FPATH
+
+    write_json(CURRENT_PLAYER_SHEET, SHEET_FPATH_RESTORE)
 
     player_sheet = PlayerSheet(**CURRENT_PLAYER_SHEET)
     # to optimize openai call
@@ -202,7 +157,10 @@ async def test_with_fake_sheet_variables_only(prompt: UserPrompt) -> PlayerSheet
         player_sheet.monete_argento = res_dict['monete_argento']
         player_sheet.monete_rame = res_dict['monete_rame']
         player_sheet.oggetti = [PlayerSheetObject(**oggetto) for oggetto in  res_dict['oggetti']]
-        
+
+        CURRENT_PLAYER_SHEET = player_sheet.dict()
+        write_json(CURRENT_PLAYER_SHEET, SHEET_FPATH)
+
         LOGGER.info(f"Risposta formattata correttamente: {player_sheet}")
 
     except Exception as e:
@@ -212,6 +170,10 @@ async def test_with_fake_sheet_variables_only(prompt: UserPrompt) -> PlayerSheet
 
 @app.post("/test_suggest_action", tags=["Test"])
 async def test_suggest_action(prompt: UserPrompt) -> str:
+    
+    global CURRENT_PLAYER_SHEET
+    global SHEET_FPATH_RESTORE
+    global SHEET_FPATH
 
     player_sheet = PlayerSheet(**CURRENT_PLAYER_SHEET)
 
@@ -232,6 +194,10 @@ async def test_suggest_action(prompt: UserPrompt) -> str:
 
 @app.post("/test_what_happens_later", tags=["Test"])
 async def test_what_happens_later(prompt: UserPrompt) -> str:
+    
+    global CURRENT_PLAYER_SHEET
+    global SHEET_FPATH_RESTORE
+    global SHEET_FPATH
 
     player_sheet = PlayerSheet(**CURRENT_PLAYER_SHEET)
     
@@ -294,7 +260,24 @@ async def test_with_fake_prompt_and_sheet() -> PlayerSheet:
 
     return res
 
-@app.get("/test_save/", tags=["Test"])
+@app.get("/test_restore/", tags=["Test"])
 def test_save() -> PlayerSheet:
+
+    global CURRENT_PLAYER_SHEET
+    global SHEET_FPATH_RESTORE
+    global SHEET_FPATH
+
+    CURRENT_PLAYER_SHEET = read_json(SHEET_FPATH_RESTORE)
+    
     return PlayerSheet(**CURRENT_PLAYER_SHEET)
     
+@app.get("/test_download/", tags=["Test"])
+def test_download() -> PlayerSheet:
+
+    global CURRENT_PLAYER_SHEET
+    global SHEET_FPATH_RESTORE
+    global SHEET_FPATH
+
+    
+    
+    return FileResponse(SHEET_FPATH_RESTORE, media_type='application/json',filename='player_sheet_test.json')
