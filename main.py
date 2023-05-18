@@ -33,18 +33,37 @@ app.add_middleware(
 test_player_sheet_json = {
     "nome_personaggio": "Pam Verdefresco",
     "classe": "Ladro",
+    "avatar": "https://cdn.mage.space/generate/e05fef03d4b54c4cab7445900e712743.png",
     "livello": 5,
     "razza": "Mezzuomo",
+    "allineamento" : "Caotico Neutrale",
     "ispirazione": 3,
+    "ca": 14,
     "punti_ferita": 20,
     "punti_ferita_massimi": 27,
     "punti_ferita_temporanei": 0,
     "monete_oro": 1200,
     "monete_argento": 15,
     "monete_rame": 33,
+    "statistiche" : [
+        {"nome": "Forza", "valore": 8, "modificatore": -1},
+        {"nome": "Destrezza", "valore": 17, "modificatore": 3},
+        {"nome": "Costituzione", "valore": 12, "modificatore": 1},
+        {"nome": "Intelligenza", "valore": 14, "modificatore": 2},
+        {"nome": "Saggezza", "valore": 10, "modificatore": 0},
+        {"nome": "Carisma", "valore": 14, "modificatore": 2},
+    ],
+    "competenze": [
+        {"nome": "Nascondersi", "bonus": 9},
+        {"nome": "Investigare", "bonus": 8},
+        {"nome": "Acrobazia", "bonus": 6},
+        {"nome": "Rapidità di mano", "bonus": 6},
+        ],
     "oggetti": [
-        "stivali elfici",
-        "sfera luminosa"
+        {"nome": "stivali elfici", "descrizione" : "ottieni vantaggio nelle prove di Furtività", "utilizzi" : "illimitati"},
+        {"nome" : "sfera luminosa", "descrizione" : "gravita intorno al personaggio illuminando l'area", "utilizzi": "illimitati"},
+        {"nome" : "arco corto +1", "descrizione" : "1d6 di danno performante a distanza, +1 a colpire e al danno", "utilizzi": "80"},
+        {"nome" : "stocco", "descrizione" : "1d8 di danno performante in mischia", "utilizzi": "illimitato"},
     ]
 }
 
@@ -81,51 +100,7 @@ async def test_with_fake_sheet(prompt: UserPrompt) -> PlayerSheet:
         LOGGER.error(f"Impossibile formattare la risposta di OpenAI: {e}")
 
     return res
-<<<<<<< Updated upstream
     
-=======
-
-
-@app.post("/test_suggest_action", tags=["Test"])
-async def test_suggest_action(prompt: UserPrompt) -> str:
-
-    player_sheet = PlayerSheet(**test_player_sheet_json)
-
-    suggest_action_template = Template(**SUGGERISCI_AZIONE_DND_ITA)
-
-    suggest_action_chain = init_llm_chain(prompt_template=suggest_action_template.text,
-                                          template_variables=suggest_action_template.input_variables,
-                                          chat_temperature=0.3,
-                                          output_key="suggest_action_chain_out")
-
-    response = suggest_action_chain.run(user_prompt=prompt.prompt,
-                                        player_sheet_json=player_sheet.json())
-
-    LOGGER.info(f"Risposta raw di OpenAI: {response}")
-
-    return response.replace("\"", "").strip()
-
-
-@app.post("/test_what_happens_later", tags=["Test"])
-async def test_what_happens_later(prompt: UserPrompt) -> str:
-
-    player_sheet = PlayerSheet(**test_player_sheet_json)
-
-    suggest_action_template = Template(**COSA_SUCCEDE_DOPO_DND_ITA)
-
-    suggest_action_chain = init_llm_chain(prompt_template=suggest_action_template.text,
-                                          template_variables=suggest_action_template.input_variables,
-                                          chat_temperature=0.3,
-                                          output_key="suggest_action_chain_out")
-
-    response = suggest_action_chain.run(user_prompt=prompt.prompt,
-                                        player_sheet_json=player_sheet.json())
-
-    LOGGER.info(f"Risposta raw di OpenAI: {response}")
-
-    return response.replace("\"", "").strip()
-
->>>>>>> Stashed changes
 
 @app.post("/test_suggest_action", tags=["Test"])
 async def test_suggest_action(prompt: UserPrompt) -> str:

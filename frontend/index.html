@@ -49,7 +49,7 @@
             <div>
                 <form id="userPromptForm">
                     <!-- <label for="userPrompt">userPrompt</label> -->
-                    <input type="text" id="userPrompt" name="userPrompt" placeholder="" required>
+                    <textarea type="text" rows="5" id="userPrompt" name="userPrompt" placeholder="" required></textarea>
                     <small>Ad es. 'aggiungi 2 monete d'oro'</small>
 
                     <button type="submit">aggiorna scheda</button>
@@ -68,9 +68,9 @@
                     <br>
                 </div>
 
-
-                <div id="fakeResult"></div>
                 <div id="altro"></div>
+                <div id="fakeResult"></div>
+
                 <div class="grid">
                     <div> <button id="save">save</button></div>
                     <div> <button id="restore">restore</button></div>
@@ -91,17 +91,38 @@
         function formatPlayerSheet(responseData) {
 
             prettySheet = `
-            <h6> Scheda personaggio </h6>
+            <br>
+            <h4> Scheda personaggio </h4>
             <hr>
-            <p>${responseData.nome_personaggio} (${responseData.classe} ${responseData.razza}, livello ${responseData.livello})</p>
+            <br>
+            
+            
+            
+            <img src="${responseData.avatar}" alt="" width="128" height="128">
+            <small>${responseData.nome_personaggio} (${responseData.classe} ${responseData.razza}, livello ${responseData.livello}), ${responseData.allineamento}</small>
+
+            <br>
+            <br>
+            <div class='grid'>
+                <div>
+
+
+            <p>Statistiche: ${JSON.stringify(responseData.statistiche)}</p>
+            <p>Competenze: ${JSON.stringify(responseData.competenze)}</p>
+            <p>CA: ${JSON.stringify(responseData.ca)}</p>
+            <p>Oggetti: ${JSON.stringify(responseData.oggetti)}</p>
+                </div>
+                <div>
             <ul>
             <li>Ispirazione: ${responseData.ispirazione}</li>
             <li>Punti ferita: ${responseData.punti_ferita}</li>
             <li>Monete d'oro: ${responseData.monete_oro}</li>
             <li>Monete d'argento: ${responseData.monete_argento}</li>
             <li>Monete di rame: ${responseData.monete_rame}</li>
-            <li>Oggetti: ${JSON.stringify(responseData.oggetti)}</li>
-            </ul>
+                </ul>
+            </div>
+            </div>
+
             `
             return prettySheet
         }
@@ -114,7 +135,7 @@
             const capitalizedWord = firstLetterCap + remainingLetters
 
             pretty = `
-            <h6> ${capitalizedWord}..ecco cosa potresti fare:</h6>
+            <h4> ${capitalizedWord}..ecco cosa potresti fare:</h4>
             <hr>
             <p>${JSON.stringify(responseData)}</p>
             `
@@ -129,7 +150,7 @@
             const capitalizedWord = firstLetterCap + remainingLetters
 
             pretty = `
-            <h6> ${capitalizedWord}...ecco cosa potrebbe succedere:</h6>
+            <h4> ${capitalizedWord}...ecco cosa potrebbe succedere:</h4>
             <hr>
             <p>${JSON.stringify(responseData)}</p>
             `
@@ -138,6 +159,7 @@
 
 
         $(document).ready(function () {
+
             $.ajax({
                 type: "GET",
                 url: "http://127.0.0.1:8000/test_sheet",
@@ -217,7 +239,7 @@
                 });
 
 
-      
+
 
             });
             $('#help').click(function () {
