@@ -253,7 +253,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:8000/test_sheet",
+                url: "http://127.0.0.1:8001/test_sheet",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (responseData) {
@@ -275,7 +275,7 @@
                 $('#loading').show();
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/test_with_fake_sheet_variables_only",
+                    url: "http://127.0.0.1:8001/test_with_fake_sheet_variables_only",
                     data: JSON.stringify(requestData),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -294,7 +294,7 @@
                 $('#loading').show();
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/test_suggest_action",
+                    url: "http://127.0.0.1:8001/test_suggest_action",
                     data: JSON.stringify({ "prompt": $('#userPrompt').val() }),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -314,7 +314,7 @@
                 $('#loading').show();
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/test_what_happens_later",
+                    url: "http://127.0.0.1:8001/test_what_happens_later",
                     data: JSON.stringify({ "prompt": $('#userPrompt').val() }),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",

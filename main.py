@@ -8,28 +8,8 @@ from templates import UPDATE_JSON, SUGGERISCI_AZIONE_DND_ITA, COSA_SUCCEDE_DOPO_
 from chains_utils import init_llm_chain
 from fastapi.middleware.cors import CORSMiddleware
 
-set_env()
-
-tags_metadata = [
-    {"name": "Test", "description": "Metodi per testare OpenAI con dati predefiniti"},
-    {"name": "Prod", "description": "Metodi da usare con il resto del mondo"}
-]
-app = FastAPI(openapi_tags=tags_metadata)
-
-origins = [
-    "http://localhost:8000",
-    "http://localhost:8001",
-]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # test data
-test_player_sheet_json = {
+TEST_PLAYER_SHEET_JSON = {
     "nome_personaggio": "Sam Sottofrasca",
     "classe": "Ladro",
     "avatar": "https://cdn.mage.space/generate/e05fef03d4b54c4cab7445900e712743.png",
@@ -111,16 +91,38 @@ test_player_sheet_json = {
     ],
 }
 
+CURRENT_PLAYER_SHEET = TEST_PLAYER_SHEET_JSON #TODO change with one get from db
+## fastapi
+set_env()
+
+tags_metadata = [
+    {"name": "Test", "description": "Metodi per testare OpenAI con dati predefiniti"},
+    {"name": "Prod", "description": "Metodi da usare con il resto del mondo"}
+]
+app = FastAPI(openapi_tags=tags_metadata)
+
+origins = [
+    "http://localhost:8000",
+    "http://localhost:8001",
+    "http://localhost:8002",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/test_sheet", tags=["Test"])
 async def test_sheet() -> PlayerSheet:
-    return PlayerSheet(**test_player_sheet_json)
+    return PlayerSheet(**CURRENT_PLAYER_SHEET)
 
 
 @app.post("/test_with_fake_sheet", tags=["Test"])
 async def test_with_fake_sheet(prompt: UserPrompt) -> PlayerSheet:
 
-    player_sheet = PlayerSheet(**test_player_sheet_json)
+    player_sheet = PlayerSheet(**CURRENT_PLAYER_SHEET)
 
     update_player_sheet_template = Template(**UPDATE_JSON)
 
@@ -148,7 +150,7 @@ async def test_with_fake_sheet(prompt: UserPrompt) -> PlayerSheet:
 @app.post("/test_with_fake_sheet_variables_only", tags=["Test"])
 async def test_with_fake_sheet_variables_only(prompt: UserPrompt) -> PlayerSheet:
 
-    player_sheet = PlayerSheet(**test_player_sheet_json)
+    player_sheet = PlayerSheet(**CURRENT_PLAYER_SHEET)
     # to optimize openai call
     
     sheet_needed_for_prompt = {
@@ -199,7 +201,7 @@ async def test_with_fake_sheet_variables_only(prompt: UserPrompt) -> PlayerSheet
 @app.post("/test_suggest_action", tags=["Test"])
 async def test_suggest_action(prompt: UserPrompt) -> str:
 
-    player_sheet = PlayerSheet(**test_player_sheet_json)
+    player_sheet = PlayerSheet(**CURRENT_PLAYER_SHEET)
 
     suggest_action_template = Template(**SUGGERISCI_AZIONE_DND_ITA)
 
@@ -219,7 +221,7 @@ async def test_suggest_action(prompt: UserPrompt) -> str:
 @app.post("/test_what_happens_later", tags=["Test"])
 async def test_what_happens_later(prompt: UserPrompt) -> str:
 
-    player_sheet = PlayerSheet(**test_player_sheet_json)
+    player_sheet = PlayerSheet(**CURRENT_PLAYER_SHEET)
     
     
 
@@ -279,3 +281,4 @@ async def test_with_fake_prompt_and_sheet() -> PlayerSheet:
         LOGGER.error(f"Impossibile formattare la risposta di OpenAI: {e}")
 
     return res
+
